@@ -131,7 +131,7 @@ alias で登録しているだけなので、補完が使えません。
 docker run --rm -it -v .:/ws  -v C:\Users\<username>\.m2\repository:/root/.m2/repository --workdir=/ws -p 8080:8080 -p 5005:5005 --entrypoint bash my-quarkus-cli:3.6.9
 ```
 
-上記で、コンテナに bash で入り、以下のコマンドを実行することで補完を有効にできます。
+上記のように entrypoint を bash に変更し、コンテナに入り、以下のコマンドを実行することで補完を有効にできます。
 この後は、コンテナの中で quarkus コマンドを実行してください。
 ```sh
 source <(quarkus completion)
