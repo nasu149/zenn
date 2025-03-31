@@ -3,7 +3,7 @@ title: "docker で Quarkus CLI を使えるようにする"
 emoji: "😽"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [quarkus, docker]
-published: false
+published: true
 ---
 quarkus CLI 便利ですよね。ただ、jbang がうまくインストールできなかったり、バージョンによってはエラー祭りになることが多いと思います。
 
