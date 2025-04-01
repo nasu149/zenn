@@ -121,7 +121,67 @@ java -jar .\target\quarkus-app\quarkus-run.jar
 3. quarkus build --native
 
 この課題は結構致命的な気がしています。
-Podman や Docker をインストールすればよいでしょうが、面倒です。
+これの対処としてコンテナの中に Podman や Docker をインストールする方法があります。
+以下に、quarkus CLI についで、Podman もインストールする Dockerfile を記載します。
+
+
+::::details Podman がインストールされているイメージを作成する方法
+### quarkus CLI と Podman が入ったイメージを作成する Dockerfile を作成する。
+```Dockerfile:Dockerfile
+FROM docker.io/jbangdev/jbang-action:0.125.1
+
+SHELL ["/bin/bash", "-c"]
+
+RUN jbang trust add https://repo1.maven.org/maven2/io/quarkus/quarkus-cli/
+RUN jbang app install --name quarkus https://repo1.maven.org/maven2/io/quarkus/quarkus-cli/3.6.9/quarkus-cli-3.6.9-runner.jar
+
+# Podman をインストールする
+ENV VERSION_ID 20.04
+RUN apt -y update && apt -y upgrade && apt -y install gnupg gnupg1 gnupg2 wget
+RUN echo "deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" | tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+RUN wget -nv https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/xUbuntu_${VERSION_ID}/Release.key -O- | apt-key add -
+
+RUN apt -y update && apt -y install podman
+RUN sed -i 's@#mount_program = "/usr/bin/fuse-overlayfs"@mount_program = "/usr/bin/fuse-overlayfs"@' /etc/containers/storage.conf
+
+ENTRYPOINT ["/jbang/.jbang/bin/quarkus"]
+```
+### イメージをビルドする
+上記の Dockerfile を 以下コマンドでビルドします。
+```sh:build コマンド
+docker build -t my-quarkus-cli:3.6.9-podman .
+```
+### quarkus を alias で登録をする
+`docker run` で quarkus CLI を実行するコマンドを quarkus という名前の alias として登録します。
+コンテナ内で Podman を使うには特権モードが必要なのでご注意ください。
+
+```powershell
+# プロファイルスクリプトを開く
+notepad $PROFILE
+
+## 以下の内容を書き込む(username 各自指定)
+function quarkus() {
+docker run --privileged --rm -it -v .:/ws  -v C:\Users\<username>\.m2\repository:/root/.m2/repository --workdir=/ws -p 8080:8080 -p 5005:5005 my-quarkus-cli:3.6.9-podman $args
+}
+```
+
+
+### 試しに image build, image push してみる
+これで native build や image push もできます。
+試しに、native build, image build をして、github のレジストリにイメージ push してみます。
+github の token は、[ここ](https://github.com/settings/tokens)で write:package の権限を持ったものを作成してください。
+```sh:native image build して github のレジストリに push する
+$USER_NAME = "xxx" # github のユーザ名
+$GITHUB_TOKEN = "ghp_yyyyyyyyyyyyyyyyyyyyy" # token
+quarkus image push --registry=ghcr.io --registry-username=${USER_NAME} --registry-password=${GITHUB_TOKEN}  --also-build --group=${USER_NAME} --native
+```
+:::message
+`docker run` コマンドに `--rm` を付けているのでコンテナはすぐに終了します。
+そのため、ローカルの docker には作成したイメージは残らないので注意してください。
+残したい場合は、コンテナにログインして操作するなり、マウントするなりしてください。
+:::
+github の packages タブでイメージが確認できれば OK です！
+::::
 
 ## 2. 補完が使えない
 alias で登録しているだけなので、補完が使えません。
