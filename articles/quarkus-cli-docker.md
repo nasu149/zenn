@@ -7,7 +7,7 @@ published: true
 ---
 quarkus CLI 便利ですよね。ただ、jbang がうまくインストールできなかったり、バージョンによってはエラー祭りになることが多いと思います。
 
-そこで今回は docker を使って、quakus CLI がインストールされたイメージを作成し、誰でも必ず quakus CLI をインストールできるようしてみます。
+そこで今回は docker を使って、quakus CLI がインストールされたイメージを作成し、どの環境でも quakus CLI をインストールできるようしてみます。
 # 環境
 - Windows 11
 - docker 24.0.5
