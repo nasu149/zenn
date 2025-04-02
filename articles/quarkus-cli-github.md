@@ -41,7 +41,7 @@ REPOSITORY                     TAG         IMAGE ID      CREATED         SIZE
 localhost/quarkus/quarkus-app  1.0.0       3054073df3a8  34 seconds ago  421 MB 
 ```
 
-上記イメージは、以下の Dockerfile から作成されます。
+ちなみに上記イメージは、以下の Dockerfile から作成されます。
 ```Dockerfile:src/main/docker/Dockerfile.jvm
 FROM registry.access.redhat.com/ubi9/openjdk-17:1.21
 
@@ -60,7 +60,7 @@ ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
 ENTRYPOINT [ "/opt/jboss/container/java/run/run-java.sh" ]
 ```
 「registry.access.redhat.com/ubi9/openjdk-17:1.21」という Java のイメージに quarkus AP の jar を入れます。
-せっかく作成したので実行してみます。
+せっかくなので実行してみます。
 ```shell-session
 $ podman run --rm localhost/quarkus/quarkus-app:1.0.0
 INFO exec -a "java" java -XX:MaxRAMPercentage=80.0 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:+ExitOnOutOfMemoryError -Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager -cp "." -jar /deployments/quarkus-run.jar 
@@ -73,13 +73,13 @@ __  ____  __  _____   ___  __ ____  ______
 ```
 実行できました！
 
-次は、ネイティブ実行可能ファイルをビルドして、それを含むイメージを作成します。
-こちらはこの後 GitHub のイメージレジストリに push するので、レジストリ名を github レジストリの名前にしておきます。
+では次は、ネイティブ実行可能ファイルをビルドして、それを含むイメージを作成します。先ほどのコマンドに `--native` オプションを付けるだけです。
+ただしこちらはこの後 GitHub のイメージレジストリに push するので、レジストリ名を github レジストリの名前にしておきます。
 ```sh
-export GITHUB_USERNAME=yyyy
+export GITHUB_USERNAME=yyyyyyy
 quarkus image build --native --registry=ghcr.io --group=${GITHUB_USERNAME} --name=${AETIFACTID} --tag=${VERSION}-native
 ```
-
+同様に、イメージができたことを確認します。
 ```shell-session
 $ podman images ${AETIFACTID}
 REPOSITORY                     TAG           IMAGE ID      CREATED             SIZE
@@ -87,7 +87,7 @@ ghcr.io/yyyyyyy/quarkus-app    1.0.0-native  7946627ca24e  About a minute ago  1
 localhost/quarkus/quarkus-app  1.0.0         3054073df3a8  5 hours ago         421 MB
 ```
 native の方は、Java が入っていないのでめっちゃ軽いですね。
-こちらは以下の Dockerfile から作成されます。
+ちなみにこのイメージは以下の Dockerfile から作成されます。
 ```Dockerfile:src/main/docker/Dockerfile.native
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.10
 WORKDIR /work/
@@ -104,18 +104,18 @@ ENTRYPOINT ["./application", "-Dquarkus.http.host=0.0.0.0"]
 
 # 3. GitHub のイメージレジストリに push する
 ### a. GitHub で token を発行する
-以下のサイトで、write:package の権限を持った token を発行し、token を控えてください。
+まずは以下のサイトで、write:package の権限を持った token を発行し、token を控えてください。
 https://github.com/settings/tokens
 
 ### b. quarkus CLI で push する
-image を push するコマンドは `quarkus image push` です。
+次に、quarkus CLI で 2. で作成した native イメージを push します。image を push するコマンドは `quarkus image push` です。この時に a. で作成した token が必要です。
 ```sh
 export GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxx
 quarkus image push --registry=ghcr.io --registry-username=${GITHUB_USERNAME} --registry-password=${GITHUB_TOKEN} --group=${GITHUB_USERNAME} --name=${AETIFACTID} --tag=${VERSION}-native
 ```
 `--alse-build` オプションを付けることで image build も一気にやってくれます。`quarkus image build` するより楽ですね。
 
-以下のサイトで push できていることを確認できれば OK です。
+以下のサイトでイメージの push できていることを確認できれば OK です。
 https://github.com/<username>?tab=packages
 
 あとは好きな場所から、pull して使ってください。
