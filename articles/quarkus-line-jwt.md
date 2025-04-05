@@ -3,7 +3,7 @@ title: "quarkus で JWT の作成と署名をして Line Messaging API のアク
 emoji: "📝"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [quarkus]
-published: false
+published: true
 ---
 今回は **quarkus-smallrye-jwt-build** を使って JWT の作成と署名をしてみます。
 さらにせっかくなので、それを使って [Line Messaging API](https://developers.line.biz/ja/docs/messaging-api/generate-json-web-token/) のアクセストークンを取得して、Line のメッセージ送信をしてみます。
