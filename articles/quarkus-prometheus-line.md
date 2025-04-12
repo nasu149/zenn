@@ -3,7 +3,7 @@ title: "quarkus のメトリクスを収集する"
 emoji: "🕌"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [quarkus]
-published: false
+published: true
 ---
 今回は quarkus におけるメトリクスの収集方法を試してみたので残します。[Micrometer を利用する](https://ja.quarkus.io/guides/telemetry-micrometer)ようです。
 
