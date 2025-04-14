@@ -1,14 +1,15 @@
 ---
-title: "Quarkus と Keycloak を使ったアクセス制御の実装(ロールベースの認可)"
+title: "Quarkus と Keycloak を使ったアクセス制御の実装(ロールベース認可)"
 emoji: "💨"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [quarkus, keycloak]
 published: true
 ---
 
-今回は Quarkus と Keycloak を組み合わせた **ロールベースの認可** を試してみましたので残します。
+今回は Quarkus と Keycloak を組み合わせた **ロールベース認可(RBAC)** を試してみたので残します。
+**ロールベース認可** とは、その名の通り **特定のロールを持っているユーザのみリクエストを許可する** というものです。
 https://ja.quarkus.io/guides/security-keycloak-authorization
-次回、**スコープ制御での認可**や**Claim ベースの認可**を試します。
+次回、**スコープベースの認可**や**Claim ベースの認可**も試します。
 
 ---
 
@@ -21,8 +22,8 @@ https://ja.quarkus.io/guides/security-keycloak-authorization
 - keycloak 23.0
 ---
 
-# ロールベースの認可
-keycloak は Podman で起動して、quarkus は 開発モードで実行します。
+# ロールベース認可の設定手順
+今回は keycloak は Podman で起動して、quarkus は 開発モードで実行します。
 
 ## keycloak の起動
 まずは Podman で keycloak の起動をします。今回は version 23 を使います。
@@ -31,11 +32,19 @@ podman run -p 8180:8080 --env KEYCLOAK_ADMIN=admin --env KEYCLOAK_ADMIN_PASSWORD
 ```
 この後 quarkus を 8080 ポートで起動するので、8180 にしておきます。
 
+## Keycloak の realm, Client を作成する
+まずは `localhost:8180` で接続し `admin/admin` で **管理コンソール** に入って、必要な設定をしてきます。
+
+ということでまずは、Realm と Client を作成します。
+今回は、**quarkus** という Realm と、**quarkus-client** という名前の Client を作成しました。
+で、Client は以下のように **Client authentication** と **Authorization** を On にしてください。他はデフォルトでよいです。
+![](https://storage.googleapis.com/zenn-user-upload/a6491d1b62d9-20250414.png)
+
+またあとで、Client Secret は使うので、控えておいてください。
 
 ## keycloak のユーザとロールを作成する
 
-まずは `localhost:8180` で接続し `admin/admin` で **管理コンソール** に入りましょう。
-で、とりあえず適当にユーザとそのパスワードの設定、それとロールを作成します。私は以下のようにコナンっぽい感じで作成しました。(デフォルトのロールは Unassign してます。)
+次に、ユーザとそのパスワードの設定、それとロールを作成します。私は以下のようにコナンっぽい感じで作成しました。(デフォルトのロールは Unassign してます。)
 
 | ユーザ   | ロール              |   
 |----------|--------------------|
@@ -64,7 +73,7 @@ cd ${AETIFACTID}
 quarkus extension add oidc,rest-jackson
 ```
 ## quarkus アプリケーションの設定
-実装する前に、quarkus の設定ファイルに、認可サーバとして keycloak を利用するという設定をしなくてはいけません。
+実装する前に、quarkus の設定ファイルに、認可サーバとして keycloak を利用するという設定をする必要があります。
 
 ```properties:src/main/resources/application.properties
 quarkus.oidc.auth-server-url=http://localhost:8180/realms/quarkus
@@ -131,7 +140,7 @@ $ curl -s -X GET http://localhost:8080/secure/normal
 
 次は、**Conan** ユーザとしてログインして、**アクセストークン**を取得します。
 ```bash
-$ export access_token=$(\
+export access_token=$(\
     curl -X POST http://localhost:8180/realms/quarkus/protocol/openid-connect/token \
     --user quarkus-client:xxxxxxxxxxx \
     -H 'content-type: application/x-www-form-urlencoded' \
@@ -148,7 +157,7 @@ OK です！今度は名前が表示されています！
 ### `/secure/black` にアクセスする
 こちらは、黒の組織しか**アクセスできない**はずです。conan ユーザでリクエストしてみましょう。
 ```shell-session
-$ curl -s -X GET http://localhost:8080/secure/black -H "Authorization: Bearer "$access_token
+$ curl -v -X GET http://localhost:8080/secure/black -H "Authorization: Bearer "$access_token
 ...
  HTTP/1.1 403 Forbidden
 ```
