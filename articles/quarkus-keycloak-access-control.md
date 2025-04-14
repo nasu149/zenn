@@ -9,9 +9,11 @@ published: true
 今回は Quarkus と Keycloak を組み合わせた **ロールベース認可(RBAC)** を試してみたので残します。
 **ロールベース認可** とは、その名の通り **特定のロールを持っているユーザのみリクエストを許可する** というものです。
 https://ja.quarkus.io/guides/security-keycloak-authorization
-次回、**スコープベースの認可**や**Claim ベースの認可**も試します。
 
----
+この記事ではだらだらと手順を書きましたが、Keycloak の設定さえできていれば、Quarkus の実装はとても簡単で、**REST サービスに `@RolesAllowed` アノテーションを付けるだけ** です。
+Quarkus 側の実装でいつもと違うところはそれだけです。(設定ファイルに Keycloak の情報を書く必要はありますが、、)
+
+そのため、Keycloak に詳しい方は、[quarkus アプリケーションの設定](#quarkus-アプリケーションの実装) 以降を読めば十分かと思います。
 
 # 環境
 - Oracle Linux 8.10
@@ -20,7 +22,6 @@ https://ja.quarkus.io/guides/security-keycloak-authorization
 - Open JDK 17.0.14
 - Podman 4.9.4-rhel
 - keycloak 23.0
----
 
 # ロールベース認可の設定手順
 今回は keycloak は Podman で起動して、quarkus は 開発モードで実行します。

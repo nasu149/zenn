@@ -5,7 +5,7 @@ type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [quarkus, keycloak]
 published: true
 ---
-前回 Quarkus と Keycloak を組み合わせた **ロールベース認可** を試してみました。
+[前回](https://zenn.dev/marcha/articles/quarkus-keycloak-access-control) Quarkus と Keycloak を組み合わせた **ロールベース認可** を試してみました。
 
 https://zenn.dev/marcha/articles/quarkus-keycloak-access-control
 
@@ -16,6 +16,11 @@ https://zenn.dev/marcha/articles/quarkus-keycloak-access-control
 
 Quarkus のドキュメントだと、以下が参考になります。
 https://ja.quarkus.io/guides/security-authorize-web-endpoints-reference
+
+といっても、Keycloak の設定さえできていれば、Quarkus の実装はとても簡単で、**REST サービスに `@PermissionsAllowed` アノテーションを付けるだけ** です。
+Quarkus 側の実装でいつもと違うところはそれだけです。(設定ファイルに Keycloak の情報を書く必要はありますが、、)
+
+そのため、Keycloak に詳しい方は、[quarkus アプリケーションの設定](#quarkus-アプリケーションの実装) 以降を読めば十分かと思います。
 
 ---
 
