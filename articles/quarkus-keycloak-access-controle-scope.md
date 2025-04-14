@@ -247,7 +247,7 @@ OK です！名前も表示されていて、getResourceRequireScope にアク�
   ...
 }
 ```
-scope は、**email profile read** になっていますね！
+scope は、**email profile read** で、**read** がついていますね！
 
 ---
 
