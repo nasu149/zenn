@@ -3,7 +3,7 @@ title: "Quarkus と Keycloak を使ったアクセス制御の実装(スコー�
 emoji: "🍣"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [quarkus, keycloak]
-published: false
+published: true
 ---
 前回 Quarkus と Keycloak を組み合わせた **ロールベース認可** を試してみました。
 
