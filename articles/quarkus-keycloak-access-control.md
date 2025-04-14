@@ -183,6 +183,10 @@ OK です！名前も表示されていて、getBlackResource にアクセスで
 ---
 
 # まとめ
-今回はここまでにします。
+ということで今回はロールベースの認可(ロールベースのアクセス制御)をやってみました。
 ロールベースの認可のより詳しい情報は、[ドキュメント](https://ja.quarkus.io/guides/security-keycloak-authorization)を参考にしてください。
-次回は、スコープを使った認可制御をしてみたいと思います。ではまた！
+
+今回は、Quarkus にアノテーションを付与しましたが、実は Keycloak の設定でアクセス制御ができます。つまり、Quarkus の実装から完全に分離できるということです。時間があったらそちらも紹介します。
+今回はこのあたりで！
+
+[次回](https://zenn.dev/marcha/articles/quarkus-keycloak-access-controle-scope)は、スコープを使った認可制御をしてみたいと思います。ではまた！

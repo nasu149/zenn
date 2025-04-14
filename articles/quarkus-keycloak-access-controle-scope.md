@@ -18,7 +18,7 @@ Quarkus のドキュメントだと、以下が参考になります。
 https://ja.quarkus.io/guides/security-authorize-web-endpoints-reference
 
 といっても、Keycloak の設定さえできていれば、Quarkus の実装はとても簡単で、**REST サービスに `@PermissionsAllowed` アノテーションを付けるだけ** です。
-Quarkus 側の実装でいつもと違うところはそれだけです。(設定ファイルに Keycloak の情報を書く必要はありますが、、)
+Quarkus の実装でいつもと違うところはそれだけです。(設定ファイルに Keycloak の情報を書く必要はありますが、、)
 
 そのため、Keycloak に詳しい方は、[quarkus アプリケーションの設定](#quarkus-アプリケーションの実装) 以降を読めば十分かと思います。
 
@@ -257,7 +257,9 @@ scope は、**email profile read** で、**read** がついていますね！
 ---
 
 # まとめ
-今回はここまでにします。
+今回は、スコープベースの認可(スコープベースのアクセス制御)をしてみました。
 ロールベース認可と組み合わせれば、より細かいアクセス制御ができそうですよね。
 スコープベースの認可のより詳しい情報は、[ドキュメント](https://ja.quarkus.io/guides/security-authorize-web-endpoints-reference)を参考にしてください。
-次回は、カスタムクレームを使った認可制御をしてみたいと思います。ではまた！
+
+今回は、Quarkus にアノテーションを付与しましたが、実は Keycloak の設定でアクセス制御ができます。つまり、Quarkus の実装から完全に分離できるということです。時間があったらそれも紹介します。
+今回はこのあたりで！
