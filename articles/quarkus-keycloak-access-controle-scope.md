@@ -1,5 +1,5 @@
 ---
-title: "Quarkus と Keycloak を使ったアクセス制御の実装(スコープベース認可)"
+title: "Quarkus と Keycloak を使ったスコープベース認可の実装"
 emoji: "🍣"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [quarkus, keycloak]
@@ -31,7 +31,6 @@ Quarkus の実装でいつもと違うところはそれだけです。(設定�
 - Open JDK 17.0.14
 - Podman 4.9.4-rhel
 - keycloak 23.0
----
 
 # スコープベース認可の設定手順
 [前回](https://zenn.dev/marcha/articles/quarkus-keycloak-access-control)とほぼ同じ手順になります。
@@ -221,7 +220,7 @@ scope は、**email profile** だけですね。
 
 では、**read** scope を要求してみます。
 ```bash
-$ export access_token=$(\
+export access_token=$(\
     curl -X POST http://localhost:8180/realms/quarkus/protocol/openid-connect/token \
     --user quarkus-client:xxxxxxxxxxx \
     -H 'content-type: application/x-www-form-urlencoded' \
@@ -237,7 +236,7 @@ conan read the data!
 ```
 OK です！名前も表示されていて、getResourceRequireScope にアクセスできています！
 
-最後に、この時のアクセストークンを jwt.io(https://jwt.io/) で中身を見てみます。
+最後に、この時のアクセストークンを [jwt.io](https://jwt.io/) で中身を見てみます。
 すると、scope に **`read`** があります。
 ```json:access token 抜粋
 {

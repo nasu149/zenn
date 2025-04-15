@@ -1,5 +1,5 @@
 ---
-title: "Quarkus と Keycloak を使ったアクセス制御の実装(ロールベース認可)"
+title: "Quarkus と Keycloak を使ったロールベース認可の実装"
 emoji: "💨"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [quarkus, keycloak]
